@@ -76,7 +76,7 @@ dermosan/
 │   ├── config.py            # Configuración general del sistema
 │   ├── predictor.py         # Módulo de predicción
 │   └── utils.py             # Utilidades de interfaz
-├── Modelo_Entrenado/        # 📁 Aquí irá el modelo entrenado (.h5) tras el entrenamiento
+├── Modelo_Entrenado/        # 📁 Aquí irá el modelo entrenado (.h5) tras el entrenamiento (Crear carpeta)
 │   └── best_resnet152.h5    # Modelo final ResNet152
 ├── Codigo_Entrenamiento/    # Scripts y datos para entrenamiento
 │   ├── train_resnet152.py   # Entrenamiento del modelo
