@@ -78,14 +78,6 @@ logs/
 .cache/
 *.cache
 
-# DERMOSAN SPECIFIC - ARCHIVOS PESADOS
-# =====================================
-
-# Modelo entrenado (muy pesado ~367MB)
-Modelo Entrenado/
-*.h5
-*.hdf5
-*.weights.h5
 
 # Datasets de imágenes médicas (muy pesados)
 Datos de prueba/
@@ -129,7 +121,6 @@ models/
 # Archivos de métricas grandes
 metrics/
 evaluation/
-*.csv
 *.xlsx
 
 # Videos o archivos multimedia pesados
