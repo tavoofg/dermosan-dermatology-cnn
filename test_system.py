@@ -1,5 +1,5 @@
 """
-Script de prueba para verificar que el sistema Dermosan funciona correctamente
+Test script to verify that the Dermosan system is functioning correctly
 """
 
 import os
@@ -8,94 +8,94 @@ import traceback
 from PIL import Image
 import numpy as np
 
-# Agregar el directorio actual al path
+# Add current directory to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 def test_model_loading():
-    """Prueba la carga del modelo."""
-    print("🔍 Probando carga del modelo...")
+    """Test model loading."""
+    print("🔍 Testing model loading...")
     try:
         from src.predictor import DermatologyPredictor
         predictor = DermatologyPredictor()
-        print("✅ Modelo cargado exitosamente")
+        print("✅ Model loaded successfully")
         return True
     except Exception as e:
-        print(f"❌ Error al cargar el modelo: {str(e)}")
+        print(f"❌ Error loading model: {str(e)}")
         traceback.print_exc()
         return False
 
 def test_image_processing():
-    """Prueba el procesamiento de imágenes."""
-    print("\n🖼️ Probando procesamiento de imágenes...")
+    """Test image processing."""
+    print("\n🖼️ Testing image processing...")
     try:
         from src.predictor import analyze_image_quality
         
-        # Crear imagen de prueba
+        # Create test image
         test_image = Image.new('RGB', (224, 224), color='red')
         
-        # Analizar calidad
+        # Analyze quality
         quality_result = analyze_image_quality(test_image)
-        print(f"✅ Análisis de calidad: {quality_result['quality_score']}/100")
+        print(f"✅ Quality analysis: {quality_result['quality_score']}/100")
         return True
     except Exception as e:
-        print(f"❌ Error en procesamiento de imágenes: {str(e)}")
+        print(f"❌ Error in image processing: {str(e)}")
         traceback.print_exc()
         return False
 
 def test_prediction():
-    """Prueba una predicción completa."""
-    print("\n🎯 Probando predicción completa...")
+    """Test a complete prediction."""
+    print("\n🎯 Testing complete prediction...")
     try:
         from src.predictor import DermatologyPredictor
         
         predictor = DermatologyPredictor()
         
-        # Crear imagen de prueba
+        # Create test image
         test_image = Image.new('RGB', (224, 224), color='blue')
         
-        # Realizar predicción
+        # Make prediction
         result = predictor.predict(test_image)
         
-        print(f"✅ Predicción exitosa:")
-        print(f"   - Clase: {result['predicted_class']}")
-        print(f"   - Confianza: {result['confidence_percentage']}")
-        print(f"   - Nivel: {result['confidence_level']}")
+        print(f"✅ Successful prediction:")
+        print(f"   - Class: {result['predicted_class']}")
+        print(f"   - Confidence: {result['confidence_percentage']}")
+        print(f"   - Level: {result['confidence_level']}")
         
-        # Probar recomendaciones
+        # Test recommendations
         recommendations = predictor.get_medical_recommendation(result)
-        print(f"   - Urgencia: {recommendations['urgency']}")
+        print(f"   - Urgency: {recommendations['urgency']}")
         
         return True
     except Exception as e:
-        print(f"❌ Error en predicción: {str(e)}")
+        print(f"❌ Error in prediction: {str(e)}")
         traceback.print_exc()
         return False
 
 def test_streamlit_components():
-    """Prueba los componentes de Streamlit."""
-    print("\n🎨 Probando componentes de interfaz...")
+    """Test Streamlit components."""
+    print("\n🎨 Testing interface components...")
     try:
         from src.utils import create_confidence_gauge, create_probability_chart
         from src.config import DISEASE_CLASSES
         
-        # Probar gauge
+        # Test gauge
         fig_gauge = create_confidence_gauge(0.85)
-        print("✅ Gauge de confianza creado")
+        print("✅ Confidence gauge created")
         
-        # Probar gráfico de probabilidades
+        # Test probability chart
         test_probs = {disease: np.random.random() for disease in DISEASE_CLASSES.values()}
         fig_chart = create_probability_chart(test_probs)
-        print("✅ Gráfico de probabilidades creado")
+        print("✅ Probability chart created")
         
         return True
     except Exception as e:
-        print(f"❌ Error en componentes: {str(e)}")
+        print(f"❌ Error in components: {str(e)}")
         traceback.print_exc()
         return False
 
 def check_dependencies():
-    """Verifica las dependencias principales."""
-    print("\n📦 Verificando dependencias...")
+    """Check main dependencies."""
+    print("\n📦 Checking dependencies...")
     
     dependencies = [
         'tensorflow', 'streamlit', 'numpy', 'pandas', 
@@ -116,17 +116,17 @@ def check_dependencies():
                 __import__(dep)
             print(f"✅ {dep}")
         except ImportError:
-            print(f"❌ {dep} - NO INSTALADO")
+            print(f"❌ {dep} - NOT INSTALLED")
             missing.append(dep)
     
     return len(missing) == 0
 
 def check_file_structure():
-    """Verifica la estructura de archivos."""
-    print("\n📁 Verificando estructura de archivos...")
+    """Check file structure."""
+    print("\n📁 Checking file structure...")
     
     required_files = [
-        "Modelo Entrenado/best_resnet152.h5",
+        "Trained_Model/best_resnet152.h5",
         "src/config.py",
         "src/predictor.py", 
         "src/utils.py",
@@ -140,23 +140,23 @@ def check_file_structure():
         if os.path.exists(file_path):
             print(f"✅ {file_path}")
         else:
-            print(f"❌ {file_path} - NO ENCONTRADO")
+            print(f"❌ {file_path} - NOT FOUND")
             missing.append(file_path)
     
     return len(missing) == 0
 
 def main():
-    """Función principal de pruebas."""
-    print("🏥 DERMOSAN - SISTEMA DE PRUEBAS")
+    """Main testing function."""
+    print("🏥 DERMOSAN - TESTING SYSTEM")
     print("=" * 50)
     
     tests = [
-        ("Estructura de archivos", check_file_structure),
-        ("Dependencias", check_dependencies),
-        ("Carga del modelo", test_model_loading),
-        ("Procesamiento de imágenes", test_image_processing),
-        ("Predicción completa", test_prediction),
-        ("Componentes de interfaz", test_streamlit_components)
+        ("File Structure", check_file_structure),
+        ("Dependencies", check_dependencies),
+        ("Model Loading", test_model_loading),
+        ("Image Processing", test_image_processing),
+        ("Full Prediction", test_prediction),
+        ("Interface Components", test_streamlit_components)
     ]
     
     results = []
@@ -167,34 +167,34 @@ def main():
             result = test_func()
             results.append((test_name, result))
         except Exception as e:
-            print(f"❌ Error inesperado en {test_name}: {str(e)}")
+            print(f"❌ Unexpected error in {test_name}: {str(e)}")
             results.append((test_name, False))
     
-    # Resumen final
+    # Final summary
     print("\n" + "=" * 50)
-    print("📊 RESUMEN DE PRUEBAS")
+    print("📊 TEST SUMMARY")
     print("=" * 50)
     
     passed = 0
     for test_name, result in results:
-        status = "✅ PASÓ" if result else "❌ FALLÓ"
+        status = "✅ PASSED" if result else "❌ FAILED"
         print(f"{test_name:.<30} {status}")
         if result:
             passed += 1
     
-    print(f"\nResultado: {passed}/{len(results)} pruebas exitosas")
+    print(f"\nResult: {passed}/{len(results)} successful tests")
     
     if passed == len(results):
-        print("\n🎉 ¡TODOS LOS TESTS PASARON! El sistema está listo para usar.")
-        print("\nPara ejecutar la aplicación:")
+        print("\n🎉 ALL TESTS PASSED! The system is ready to use.")
+        print("\nTo run the application:")
         print("   streamlit run app.py")
     else:
-        print(f"\n⚠️ {len(results) - passed} pruebas fallaron. Revisar errores arriba.")
+        print(f"\n⚠️ {len(results) - passed} tests failed. Check errors above.")
         
-        if not results[0][1]:  # Estructura de archivos
-            print("\n💡 Sugerencia: Verificar que todos los archivos estén en su lugar")
-        if not results[1][1]:  # Dependencias
-            print("\n💡 Sugerencia: Instalar dependencias con: pip install -r requirements.txt")
+        if not results[0][1]:  # File Structure
+            print("\n💡 Suggestion: Verify that all files are in place")
+        if not results[1][1]:  # Dependencies
+            print("\n💡 Suggestion: Install dependencies with: pip install -r requirements.txt")
 
 if __name__ == "__main__":
     main()

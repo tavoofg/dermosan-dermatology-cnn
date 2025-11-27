@@ -1,5 +1,5 @@
 """
-Módulo de predicción para el sistema de diagnóstico dermatológico
+Prediction module for the dermatological diagnostic system
 """
 
 import os
@@ -15,74 +15,74 @@ from src.config import MODEL_PATH, MODEL_PATH_FALLBACK, IMG_SIZE, DISEASE_CLASSE
 
 class DermatologyPredictor:
     """
-    Clase para realizar predicciones de enfermedades dermatológicas
-    usando el modelo ResNet152 entrenado.
+    Class for making predictions of dermatological diseases
+    using the trained ResNet152 model.
     """
     
     def __init__(self):
-        """Inicializa el predictor cargando el modelo."""
+        """Initialize the predictor by loading the model."""
         self.model = None
         self.load_model()
         
     def load_model(self):
-        """Carga el modelo entrenado."""
+        """Load the trained model."""
         try:
-            # Intentar primera ruta (corregida)
+            # Try first path (corrected)
             if os.path.exists(MODEL_PATH):
                 model_path = MODEL_PATH
-            # Intentar ruta de respaldo
+            # Try fallback path
             elif os.path.exists(MODEL_PATH_FALLBACK):
                 model_path = MODEL_PATH_FALLBACK
-                logging.warning(f"Usando ruta de respaldo: {MODEL_PATH_FALLBACK}")
+                logging.warning(f"Using fallback path: {MODEL_PATH_FALLBACK}")
             else:
-                raise FileNotFoundError(f"No se encontró el modelo en {MODEL_PATH} ni en {MODEL_PATH_FALLBACK}")
+                raise FileNotFoundError(f"Model not found in {MODEL_PATH} or {MODEL_PATH_FALLBACK}")
             
-            # Intentar cargar con configuraciones compatibles
+            # Try loading with compatible configurations
             try:
-                # Método 1: Carga normal
+                # MMethod 1: Normal load
                 self.model = tf.keras.models.load_model(model_path)
-                logging.info(f"Modelo cargado exitosamente desde {model_path}")
+                logging.info(f"Model successfully loaded from {model_path}")
             except Exception as e1:
-                logging.warning(f"Fallo método 1: {str(e1)}")
+                logging.warning(f"Method 1 failed: {str(e1)}")
                 try:
-                    # Método 2: Cargar con compile=False
+                    # MMethod 2: Load with compile=False
                     self.model = tf.keras.models.load_model(model_path, compile=False)
-                    # Recompilar el modelo manualmente
+                    # Recompile the model manually
                     self.model.compile(
                         optimizer='adam',
                         loss='sparse_categorical_crossentropy',
                         metrics=['accuracy']
                     )
-                    logging.info(f"Modelo cargado con compile=False desde {model_path}")
+                    logging.info(f"Model loaded with compile=False from {model_path}")
                 except Exception as e2:
-                    logging.warning(f"Fallo método 2: {str(e2)}")
-                    # Método 3: Cargar solo pesos y reconstruir arquitectura
+                    logging.warning(f"Method 2 failed: {str(e2)}")
+                    # MMethod 3: Load weights only and rebuild architecture
                     self._load_model_weights_only(model_path)
         except Exception as e:
-            logging.error(f"Error al cargar el modelo: {str(e)}")
+            logging.error(f"Error loading model: {str(e)}")
             raise
     
     def _load_model_weights_only(self, model_path):
-        """Método alternativo: reconstruir modelo y cargar solo pesos."""
+        """Alternative method: rebuild model and load weights only."""
         try:
             from tensorflow.keras.applications import ResNet152
             from tensorflow.keras.layers import GlobalAveragePooling2D, Dense, Dropout
             from tensorflow.keras.models import Model
             
-            logging.info("Intentando reconstruir arquitectura del modelo...")
+            logging.info("Attempting to rebuild model architecture...")
             
-            # Reconstruir la arquitectura del modelo
+            # Rebuild model architecture
             base = ResNet152(
                 weights='imagenet',
                 include_top=False,
                 input_shape=(*IMG_SIZE, 3)
             )
             
-            # Hacer las últimas 50 capas entrenables (como en el script original)
+            # Make the last 50 layers trainable (as in the original script)
             for layer in base.layers[:-50]:
                 layer.trainable = False
             
-            # Añadir capas de clasificación
+            # Add classification layers
             x = GlobalAveragePooling2D()(base.output)
             x = Dense(512, activation='relu')(x)
             x = Dropout(0.35)(x)
@@ -91,46 +91,46 @@ class DermatologyPredictor:
             
             self.model = Model(inputs=base.input, outputs=out)
             
-            # Compilar
+            # Compile
             self.model.compile(
                 optimizer='adam',
                 loss='sparse_categorical_crossentropy',
                 metrics=['accuracy']
             )
             
-            # Cargar solo los pesos
+            # Load weights only
             self.model.load_weights(model_path)
-            logging.info("Modelo reconstruido y pesos cargados exitosamente")
+            logging.info("Model rebuilt and weights loaded successfully")
             
         except Exception as e:
-            logging.error(f"Error al reconstruir modelo: {str(e)}")
+            logging.error(f"Error rebuilding model: {str(e)}")
             raise
     
     def preprocess_image(self, image: Image.Image) -> np.ndarray:
         """
-        Preprocesa la imagen para el modelo.
+        Preprocess the image for the model.
         
         Args:
-            image: Imagen PIL
+            image: PIL Image
             
         Returns:
-            Array numpy preprocessado
+            Preprocessed numpy array
         """
         try:
-            # Convertir a RGB si es necesario
+            # Convert to RGB if necessary
             if image.mode != 'RGB':
                 image = image.convert('RGB')
             
-            # Redimensionar
+            # Resize
             image = image.resize(IMG_SIZE)
             
-            # Convertir a array numpy
+            # Convert to numpy array
             img_array = np.array(image)
             
-            # Aplicar preprocesamiento de ResNet
+            # Apply ResNet preprocessing
             img_array = preprocess_input(img_array)
             
-            # Añadir dimensión batch
+            # Add batch dimension
             img_array = np.expand_dims(img_array, axis=0)
             
             return img_array
@@ -141,34 +141,34 @@ class DermatologyPredictor:
     
     def predict(self, image: Image.Image) -> Dict:
         """
-        Realiza predicción sobre una imagen.
+        Make a prediction on an image.
         
         Args:
-            image: Imagen PIL
+            image: PIL Image
             
         Returns:
-            Diccionario con resultados de predicción
+            Dictionary with prediction results
         """
         try:
             if self.model is None:
-                raise ValueError("Modelo no cargado")
+                raise ValueError("Model not loaded")
             
-            # Preprocesar imagen
+            # Preprocess image
             processed_image = self.preprocess_image(image)
             
-            # Realizar predicción
+            # Make prediction
             predictions = self.model.predict(processed_image, verbose=0)
             probabilities = predictions[0]
             
-            # Obtener clase predicha
+            # Get predicted class
             predicted_class_idx = np.argmax(probabilities)
             predicted_class = DISEASE_CLASSES[predicted_class_idx]
             confidence = float(probabilities[predicted_class_idx])
             
-            # Determinar nivel de confianza
+            # Determine confidence level
             confidence_level = self._get_confidence_level(confidence)
             
-            # Obtener top 3 predicciones
+            # Get top 3 predictions
             top_3_indices = np.argsort(probabilities)[-3:][::-1]
             top_3_predictions = [
                 {
@@ -192,18 +192,18 @@ class DermatologyPredictor:
             }
             
         except Exception as e:
-            logging.error(f"Error en predicción: {str(e)}")
+            logging.error(f"Error in prediction: {str(e)}")
             raise
     
     def _get_confidence_level(self, confidence: float) -> str:
         """
-        Determina el nivel de confianza basado en el threshold.
+        Determines the confidence level based on the threshold.
         
         Args:
-            confidence: Valor de confianza
+            confidence: Confidence value
             
         Returns:
-            Nivel de confianza como string
+            Confidence level as a string
         """
         if confidence >= CONFIDENCE_THRESHOLDS["high"]:
             return "Alta"
@@ -216,57 +216,58 @@ class DermatologyPredictor:
     
     def get_medical_recommendation(self, prediction_result: Dict) -> Dict:
         """
-        Genera recomendaciones médicas basadas en la predicción.
+        Generates medical recommendations based on the prediction.
         
         Args:
-            prediction_result: Resultado de predicción
+            prediction_result: Prediction result
             
         Returns:
-            Diccionario con recomendaciones
+            Dictionary with recommendations
         """
         predicted_class = prediction_result["predicted_class"]
         confidence_level = prediction_result["confidence_level"]
         
-        # Recomendaciones basadas en confianza
-        if confidence_level == "Alta":
-            urgency = "Consulta recomendada"
-            action = "Programar cita con dermatólogo para confirmación"
-        elif confidence_level == "Media":
-            urgency = "Evaluación adicional necesaria"
-            action = "Se recomienda segunda opinión y posible biopsia"
+        # Recommendations based on confidence
+        if confidence_level == "High":
+            urgency = "Recommended consultation"
+            action = "Schedule an appointment with a dermatologist for confirmation"
+        elif confidence_level == "Medium":
+            urgency = "Additional evaluation required"
+            action = "A second opinion and possible biopsy are recommended"
         else:
-            urgency = "Diagnóstico incierto"
-            action = "Requiere evaluación clínica presencial inmediata"
+            urgency = "Uncertain diagnosis"
+        action = "Requires immediate in-person clinical evaluation"
+
         
-        # Recomendaciones específicas para condiciones graves
-        if "Melanoma" in predicted_class and confidence_level in ["Alta", "Media"]:
-            urgency = "URGENTE - Atención inmediata"
-            action = "Derivar a oncólogo dermatológico de inmediato"
-        elif "Carcinoma" in predicted_class and confidence_level in ["Alta", "Media"]:
-            urgency = "Prioritario"
-            action = "Programar biopsia y evaluación oncológica"
+        # Specific recommendations for severe conditions
+        if "Melanoma" in predicted_class and confidence_level in ["High", "Medium"]:
+            urgency = "URGENT - Immediate attention"
+            action = "Refer to dermatologic oncologist immediately"
+        elif "Carcinoma" in predicted_class and confidence_level in ["High", "Medium"]:
+            urgency = "Priority"
+            action = "Schedule biopsy and oncologic evaluation"
         
         return {
             "urgency": urgency,
             "recommended_action": action,
-            "follow_up": "Seguimiento en 2-4 semanas según evolución"
+            "follow_up": "Follow-up in 2-4 weeks depending on evolution"
         }
 
 def analyze_image_quality(image: Image.Image) -> Dict:
     """
-    Analiza la calidad de la imagen para diagnóstico.
+    Analyzes the quality of the image for diagnosis.
     
     Args:
-        image: Imagen PIL
+        image: PIL Image
         
     Returns:
-        Diccionario con métricas de calidad
+        Dictionary with quality metrics
     """
     try:
-        # Convertir a array numpy
+        # Convert to numpy array
         img_array = np.array(image)
         
-        # 1. VALIDACIÓN CRÍTICA: Verificar que es una imagen médica válida
+        # 1. CRITICAL VALIDATION: Verify that it is a valid medical image
         validation_result = validate_medical_image(img_array)
         if not validation_result["is_valid"]:
             return {
@@ -281,39 +282,39 @@ def analyze_image_quality(image: Image.Image) -> Dict:
                 "validation_error": validation_result["error_type"]
             }
         
-        # 2. Calcular métricas básicas de calidad
+        # 2. Calculate basic quality metrics
         blur_score = cv2.Laplacian(cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY), cv2.CV_64F).var()
         brightness = np.mean(img_array)
         contrast = np.std(img_array)
         
-        # 3. Evaluación de calidad
+        # 3. Quality assessment
         quality_score = 0
         issues = []
         
-        # Evaluar nitidez
+        # Assess sharpness
         if blur_score < 100:
-            issues.append("Imagen borrosa - considere tomar nueva foto")
+            issues.append("Blurry image - consider retaking photo")
         else:
             quality_score += 25
             
-        # Evaluar brillo
+        # Assess brightness
         if brightness < 50:
-            issues.append("Imagen muy oscura")
+            issues.append("Image too dark")
         elif brightness > 200:
-            issues.append("Imagen muy brillante")
+            issues.append("Image too bright")
         else:
             quality_score += 25
             
-        # Evaluar contraste
+        # Assess contrast
         if contrast < 30:
-            issues.append("Bajo contraste")
+            issues.append("Low contrast")
         else:
             quality_score += 25
             
-        # Evaluar resolución
+        # Assess resolution
         width, height = image.size
         if width < 224 or height < 224:
-            issues.append("Resolución muy baja")
+            issues.append("Resolution too low")
         else:
             quality_score += 25
             
@@ -330,10 +331,10 @@ def analyze_image_quality(image: Image.Image) -> Dict:
         }
         
     except Exception as e:
-        logging.error(f"Error en análisis de calidad: {str(e)}")
+        logging.error(f"Error in quality analysis: {str(e)}")
         return {
             "quality_score": 0,
-            "issues": ["Error al analizar la imagen"],
+            "issues": ["Error analyzing the image"],
             "is_suitable": False,
             "is_medical_image": False,
             "validation_error": "processing_error"
@@ -341,48 +342,48 @@ def analyze_image_quality(image: Image.Image) -> Dict:
 
 def validate_medical_image(img_array: np.ndarray) -> Dict:
     """
-    Valida que la imagen sea apropiada para análisis dermatológico.
+    Validates that the image is appropriate for dermatological analysis.
     
     Args:
-        img_array: Array numpy de la imagen
+        img_array: Numpy array of the image
         
     Returns:
-        Diccionario con resultado de validación
+        Dictionary with validation result
     """
     try:
-        # 1. Verificar que no sea texto/documento
+        # 1. Verify that it is not a text/document
         if is_text_document(img_array):
             return {
                 "is_valid": False,
                 "error_type": "text_document",
                 "issues": [
-                    "🚫 IMAGEN NO VÁLIDA: Se detectó un documento de texto",
-                    "📋 Este sistema solo analiza fotografías de piel/lesiones cutáneas",
-                    "📸 Por favor, suba una imagen dermatológica real"
+                    "🚫 INVALID IMAGE: A text document was detected",
+                    "📋 This system only analyzes skin/dermatological lesion photographs",
+                    "📸 Please upload a real dermatological image"
                 ]
             }
         
-        # 2. Verificar que tenga características de imagen médica
+        # 2. Verify that it has medical image characteristics
         if not has_skin_characteristics(img_array):
             return {
                 "is_valid": False,
                 "error_type": "not_medical",
                 "issues": [
-                    "🚫 IMAGEN NO MÉDICA: No se detectaron características de piel",
-                    "🏥 Este sistema está diseñado para imágenes dermatológicas",
-                    "📸 Suba una fotografía clara de piel o lesión cutánea"
+                    "🚫 NOT A MEDICAL IMAGE: No skin characteristics detected",
+                    "🏥 This system is designed for dermatological images",
+                    "📸 Please upload a clear photograph of skin or a skin lesion"
                 ]
             }
         
-        # 3. Verificar que no sea una captura de pantalla
+        # 3. Verify that it is not a screenshot
         if is_screenshot(img_array):
             return {
                 "is_valid": False,
                 "error_type": "screenshot",
                 "issues": [
-                    "🚫 CAPTURA DE PANTALLA DETECTADA",
-                    "📱 No se permiten capturas de pantalla o imágenes de documentos",
-                    "📸 Use una cámara para fotografiar directamente la piel"
+                    "🚫 SCREENSHOT DETECTED",
+                    "📱 Screenshots or document images are not allowed",
+                    "📸 Use a camera to photograph the skin directly"
                 ]
             }
         
@@ -396,57 +397,57 @@ def validate_medical_image(img_array: np.ndarray) -> Dict:
         return {
             "is_valid": False,
             "error_type": "validation_error",
-            "issues": [f"Error en validación: {str(e)}"]
+            "issues": [f"Validation error: {str(e)}"]
         }
 
 def is_text_document(img_array: np.ndarray) -> bool:
-    """Detecta si la imagen es un documento de texto."""
+    """Detects if the image is a text document."""
     try:
-        # Convertir a escala de grises
+        # Convert to grayscale
         gray = cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
         
-        # 1. Detectar mucho texto (áreas blancas/negras bien definidas)
+        # 1. Detect a lot of text (well-defined white/black areas)
         binary = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)[1]
         white_ratio = np.sum(binary == 255) / binary.size
         
-        # 2. Detectar patrones de texto (líneas horizontales largas)
-        horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (40, 1))  # Más restrictivo
+        # 2. Detect text patterns (long horizontal lines)
+        horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (40, 1))  # More restrictive
         horizontal_lines = cv2.morphologyEx(binary, cv2.MORPH_OPEN, horizontal_kernel)
         horizontal_ratio = np.sum(horizontal_lines > 0) / horizontal_lines.size
         
-        # 3. Detectar texto real usando detección de caracteres
-        # Buscar regiones rectangulares pequeñas que podrían ser letras
+        # 3. Detect real text using character detection
+        # Look for small rectangular regions that could be letters
         contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         text_like_regions = 0
         
         for contour in contours:
             area = cv2.contourArea(contour)
-            if 50 < area < 500:  # Tamaño típico de caracteres
+            if 50 < area < 500:  # Typical character size
                 x, y, w, h = cv2.boundingRect(contour)
                 aspect_ratio = w / h if h > 0 else 0
-                if 0.1 < aspect_ratio < 3:  # Proporción típica de letras
+                if 0.1 < aspect_ratio < 3:  # Typical letter aspect ratio
                     text_like_regions += 1
         
-        text_density = text_like_regions / (gray.shape[0] * gray.shape[1] / 10000)  # Normalizar por área
+        text_density = text_like_regions / (gray.shape[0] * gray.shape[1] / 10000)  # Normalize by area
         
-        # 4. Detectar bordes muy rectos y organizados (típico de documentos)
+        # 4. Detect very straight and organized edges (typical of documents)
         edges = cv2.Canny(gray, 50, 150)
         edge_ratio = np.sum(edges > 0) / edges.size
         
-        # Criterios MÁS ESTRICTOS para documento de texto
-        # Solo considerar documento si MÚLTIPLES indicadores están presentes
+        # MORE STRICT CRITERIA for text document
+        # Only consider document if MULTIPLE indicators are present
         strong_indicators = 0
         
-        if white_ratio > 0.85:  # Fondo muy blanco (más restrictivo)
+        if white_ratio > 0.85:  # Very white background (more restrictive)
             strong_indicators += 1
-        if horizontal_ratio > 0.15:  # Muchas líneas horizontales largas
+        if horizontal_ratio > 0.15:  # Many long horizontal lines
             strong_indicators += 1  
-        if text_density > 5:  # Densidad alta de regiones tipo texto
+        if text_density > 5:  # High density of text-like regions
             strong_indicators += 1
-        if edge_ratio > 0.2 and white_ratio > 0.7:  # Muchos bordes + fondo blanco
+        if edge_ratio > 0.2 and white_ratio > 0.7:  # Many edges + white background
             strong_indicators += 1
             
-        # Necesita al menos 2 indicadores fuertes para ser considerado documento
+        # Needs at least 2 strong indicators to be considered a document
         is_document = strong_indicators >= 2
         
         return is_document
@@ -455,20 +456,20 @@ def is_text_document(img_array: np.ndarray) -> bool:
         return False
 
 def has_skin_characteristics(img_array: np.ndarray) -> bool:
-    """Verifica si la imagen tiene características típicas de piel."""
+    """Checks if the image has typical skin characteristics."""
     try:
-        # Convertir a HSV para análisis de color
+        # Convert to HSV for color analysis
         hsv = cv2.cvtColor(img_array, cv2.COLOR_RGB2HSV)
         
-        # 1. Rangos de color típicos de piel humana (más amplios)
+        # 1. Typical human skin color ranges (broader)
         skin_ranges = [
-            # Piel muy clara
+            # Very light skin
             ([0, 10, 60], [25, 255, 255]),
-            # Piel clara a media
+            # Light to medium skin
             ([0, 15, 30], [30, 255, 255]),
-            # Piel media a oscura
+            # Medium to dark skin
             ([5, 25, 20], [25, 255, 200]),
-            # Piel con inflamación/enrojecimiento
+            # Inflamed/reddened skin
             ([0, 30, 80], [15, 255, 255])
         ]
         
@@ -481,59 +482,59 @@ def has_skin_characteristics(img_array: np.ndarray) -> bool:
         
         skin_ratio = skin_pixels / total_pixels
         
-        # 2. Verificar textura orgánica vs geométrica
+        # 2. Check organic vs geometric texture
         gray = cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
         
-        # Detectar líneas muy rectas y largas (no deseadas en piel)
+        # Detect very straight and long lines (undesired in skin)
         edges = cv2.Canny(gray, 50, 150)
-        lines = cv2.HoughLines(edges, 1, np.pi/180, threshold=150)  # Threshold más alto
+        lines = cv2.HoughLines(edges, 1, np.pi/180, threshold=150)  # Higher threshold
         straight_lines = 0
         
         if lines is not None:
             for line in lines:
                 rho, theta = line[0]
-                # Solo contar líneas muy horizontales o verticales (documentos/UI)
+                # Only count very horizontal or vertical lines (documents/UI)
                 if abs(theta) < 0.1 or abs(theta - np.pi/2) < 0.1 or abs(theta - np.pi) < 0.1:
                     straight_lines += 1
         
-        has_many_straight_lines = straight_lines > 15  # Más tolerante
+        has_many_straight_lines = straight_lines > 15  # More tolerant
         
-        # 3. Verificar que no sea una imagen muy uniforme (típico de capturas)
+        # 3. Check if the image is too uniform (typical of screenshots)
         std_dev = np.std(gray)
         is_too_uniform = std_dev < 15
         
-        # La imagen tiene características de piel si:
-        # - Tiene tonos de piel O
-        # - No tiene muchas líneas rectas perfectas Y no es muy uniforme
-        has_skin_tones = skin_ratio > 0.05  # Más tolerante
+        # The image has skin characteristics if:
+        # - It has skin tones OR
+        # - It does not have many perfect straight lines AND is not very uniform
+        has_skin_tones = skin_ratio > 0.05  # More tolerant
         not_geometric = not has_many_straight_lines and not is_too_uniform
         
         return has_skin_tones or not_geometric
         
     except:
-        return True  # En caso de error, permitir análisis
+        return True  # In case of error, allow analysis
 
 def is_screenshot(img_array: np.ndarray) -> bool:
-    """Detecta si es una captura de pantalla de interfaz."""
+    """Detects if it is a user interface screenshot."""
     try:
-        # 1. Detectar bordes muy definidos (típico de UI)
+        # 1. Detect very defined edges (typical of UI)
         gray = cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
         edges = cv2.Canny(gray, 100, 200)
         
-        # 2. Detectar rectángulos perfectos
+        # 2. Detect perfect rectangles
         contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         perfect_rects = 0
         
         for contour in contours:
-            if cv2.contourArea(contour) > 1000:  # Solo contornos grandes
+            if cv2.contourArea(contour) > 1000:  # Only large contours
                 approx = cv2.approxPolyDP(contour, 0.02 * cv2.arcLength(contour, True), True)
-                if len(approx) == 4:  # Es un rectángulo
+                if len(approx) == 4:  # It's a rectangle
                     perfect_rects += 1
         
-        # 3. Verificar colores típicos de UI (mucho blanco/gris)
+        # 3. Check typical UI colors (a lot of white/gray)
         unique_colors = len(np.unique(img_array.reshape(-1, img_array.shape[-1]), axis=0))
         
-        # Es screenshot si tiene muchos rectángulos perfectos y pocos colores únicos
+        # It's a screenshot if it has many perfect rectangles and few unique colors
         return perfect_rects > 5 and unique_colors < 50
         
     except:

@@ -1,17 +1,17 @@
 """
-Configuración del sistema de diagnóstico dermatológico
+Configuration of the dermatological diagnostic system
 """
 
 import os
 from typing import Dict, List, Tuple
 
-# ── Configuración del modelo ─────────────────────────────────────────────────
-MODEL_PATH = "models/best_resnet152.h5"  # Ruta corregida
-MODEL_PATH_FALLBACK = "Modelo Entrenado/best_resnet152.h5"  # Ruta alternativa
+# ── Model Configuration ──────────────────────────────────────────────────
+MODEL_PATH = "models/best_resnet152.h5"  # Corrected path
+MODEL_PATH_FALLBACK = "Trained_Model/best_resnet152.h5"  # Alternative path
 IMG_SIZE = (224, 224)
 BATCH_SIZE = 32
 
-# ── Clases de enfermedades dermatológicas ────────────────────────────────────
+# ── Dermatological Disease Classes ─────────────────────────────────────────
 DISEASE_CLASSES = {
     0: "Eczema",
     1: "Warts Molluscum and Viral Infections", 
@@ -25,80 +25,80 @@ DISEASE_CLASSES = {
     9: "Tinea Ringworm Candidiasis"
 }
 
-# ── Información médica detallada ──────────────────────────────────────────────
+# ── Detailed Medical Information ──────────────────────────────────────────────
 DISEASE_INFO = {
     "Eczema": {
-        "description": "Inflamación crónica de la piel caracterizada por erupciones rojas, picazón y descamación.",
-        "severity": "Leve a Moderada",
-        "treatment": "Hidratantes, corticosteroides tópicos, antihistamínicos",
-        "color": "#E74C3C"  # Rojo médico
+        "description": "Chronic inflammation of the skin characterized by red rashes, itching, and scaling.",
+        "severity": "Mild to Moderate",
+        "treatment": "Moisturizers, topical corticosteroids, antihistamines",
+        "color": "#E74C3C"  # Medical Red
     },
     "Warts Molluscum and Viral Infections": {
-        "description": "Infecciones virales de la piel que causan pequeñas protuberancias o verrugas.",
-        "severity": "Leve",
+        "description": "Viral skin infections causing small bumps or warts.",
+        "severity": "Mild",
         "treatment": "Crioterapia, medicamentos tópicos, observación",
-        "color": "#1ABC9C"  # Verde azulado médico
+        "color": "#1ABC9C"  # Medical Teal
     },
     "Melanoma": {
-        "description": "Tipo más peligroso de cáncer de piel que se desarrolla en los melanocitos.",
-        "severity": "Grave - Requiere atención inmediata",
-        "treatment": "Cirugía, inmunoterapia, terapia dirigida",
-        "color": "#8E44AD"  # Púrpura médico (crítico)
+        "description": "Most dangerous type of skin cancer that develops in melanocytes.",
+        "severity": "Severe - Requires immediate attention",
+        "treatment": "Surgery, immunotherapy, targeted therapy",
+        "color": "#8E44AD"  # Medical Purple (critical)
     },
     "Atopic Dermatitis": {
-        "description": "Forma de eczema crónico común en niños, caracterizado por piel seca y con picazón.",
-        "severity": "Leve a Moderada",
-        "treatment": "Hidratantes, corticosteroides, inmunomoduladores",
-        "color": "#F39C12"  # Naranja médico
+        "description": "Common chronic eczema in children, characterized by dry and itchy skin.",
+        "severity": "Mild to Moderate",
+        "treatment": "Moisturizers, corticosteroids, immunomodulators",
+        "color": "#F39C12"  # Medical Orange
     },
     "Basal Cell Carcinoma (BCC)": {
-        "description": "Tipo más común de cáncer de piel, crecimiento lento y raramente metastásico.",
-        "severity": "Moderada",
-        "treatment": "Cirugía, crioterapia, medicamentos tópicos",
-        "color": "#C0392B"  # Rojo oscuro médico
+        "description": "Most common type of skin cancer, slow growing and rarely metastatic.",
+        "severity": "Moderate",
+        "treatment": "Surgery, cryotherapy, topical medications",
+        "color": "#C0392B"  # Medical Dark Red
     },
     "Melanocytic Nevi (NV)": {
-        "description": "Lunares benignos comunes, generalmente no requieren tratamiento.",
-        "severity": "Benigna",
-        "treatment": "Observación, biopsia si hay cambios",
-        "color": "#27AE60"  # Verde médico
+        "description": "Common benign moles, generally do not require treatment.",
+        "severity": "Benign",
+        "treatment": "Observation, biopsy if changes occur",
+        "color": "#27AE60"  # Medical Green
     },
     "Benign Keratosis-like Lesions (BKL)": {
-        "description": "Lesiones benignas de la piel, incluye queratosis seborreica y lesiones similares.",
-        "severity": "Benigna",
-        "treatment": "Observación, remoción cosmética si se desea",
-        "color": "#3498DB"  # Azul médico
+        "description": "Benign skin lesions, including seborrheic keratosis and similar lesions.",
+        "severity": "Benign",
+        "treatment": "Observation, cosmetic removal if desired",
+        "color": "#3498DB"  # Medical Blue
     },
     "Psoriasis Lichen Planus": {
-        "description": "Enfermedades inflamatorias crónicas de la piel con placas escamosas.",
-        "severity": "Moderada",
-        "treatment": "Corticosteroides, inmunosupresores, fototerapia",
-        "color": "#9B59B6"  # Púrpura claro médico
+        "description": "Chronic inflammatory skin diseases with scaly plaques.",
+        "severity": "Moderate",
+        "treatment": "Corticosteroids, immunosuppressants, phototherapy",
+        "color": "#9B59B6"  # Medical Light Purple
     },
     "Seborrheic Keratoses": {
-        "description": "Crecimientos benignos de la piel, comunes en adultos mayores.",
-        "severity": "Benigna",
-        "treatment": "Observación, remoción cosmética",
-        "color": "#16A085"  # Verde oscuro médico
+        "description": "Benign skin growths, common in older adults.",
+        "severity": "Benign",
+        "treatment": "Observation, cosmetic removal",
+        "color": "#16A085"  # Medical Dark Green
     },
     "Tinea Ringworm Candidiasis": {
-        "description": "Infecciones fúngicas de la piel que causan erupciones circulares o irritación.",
-        "severity": "Leve a Moderada",
-        "treatment": "Antifúngicos tópicos u orales",
-        "color": "#E67E22"  # Naranja oscuro médico
+        "description": "Fungal skin infections causing circular rashes or irritation.",
+        "severity": "Mild to Moderate",
+        "treatment": "Topical or oral antifungals",
+        "color": "#E67E22"  # Medical Dark Orange
     }
 }
 
 # ── Configuración de la aplicación ────────────────────────────────────────────
 APP_CONFIG = {
-    "title": " Dermosan - Sistema de Diagnóstico Dermatológico",
+    "title": " Dermosan - Dermatological Diagnosis System",
     "subtitle": "DERMOSAN – UNDC 2025",
-    "description": "Sistema automatizado de diagnóstico de enfermedades dermatológicas usando Deep Learning"
+    "description": "Automated system for diagnosing dermatological diseases using Deep Learning"
 }
 
-# ── Configuración de confianza ────────────────────────────────────────────────
+# ── Confidence Configuration ────────────────────────────────────────────────
 CONFIDENCE_THRESHOLDS = {
-    "high": 0.8,      # Alta confianza
-    "medium": 0.6,    # Confianza media
-    "low": 0.4        # Baja confianza
+    "high": 0.8,      # High confidence
+    "medium": 0.6,    # Medium confidence
+    "low": 0.4        # Low confidence
 }

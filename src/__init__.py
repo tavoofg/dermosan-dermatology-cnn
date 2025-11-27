@@ -1,11 +1,11 @@
 """
-Dermosan - Sistema de Diagnóstico Dermatológico Automatizado
+Dermosan - Automated Dermatological Diagnostic System
 
-Módulos principales:
-- config: Configuración del sistema
-- predictor: Lógica de predicción y análisis
-- utils: Utilidades de interfaz y visualización
+Main modules:
+- config: System configuration
+- predictor: Prediction and analysis logic
+- utils: Interface and visualization utilities
 """
 
 __author__ = "DERMOSAN – UNDC 2025"
-__description__ = "Sistema automatizado de diagnóstico dermatológico"
+__description__ = "Automated dermatological diagnostic system"

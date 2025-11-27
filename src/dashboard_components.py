@@ -1,5 +1,5 @@
 """
-Componentes adicionales para el dashboard de Dermosan
+Additional components for the Dermosan dashboard
 """
 
 import streamlit as st
@@ -8,7 +8,7 @@ from plotly.subplots import make_subplots
 import pandas as pd
 
 def create_medical_dashboard_header():
-    """Crea un header específico para el dashboard de resultados."""
+    """Creates a specific header for the results dashboard."""
     st.markdown("""
     <div style="background: linear-gradient(135deg, #2E5BBA, #4A90B8); 
                 color: white;
@@ -28,46 +28,46 @@ def create_medical_dashboard_header():
                 <span style="font-size: 2.5rem;">📊</span>
             </div>
             <h2 style="margin: 0; color: white; font-size: 2rem; font-weight: 600;">
-                Dashboard de Análisis Médico
+                Medical Analysis Dashboard
             </h2>
         </div>
         
         <p style="margin: 0; opacity: 0.9; font-size: 1.1rem;">
-            Resultados detallados del diagnóstico dermatológico con IA
+            Detailed results of dermatological diagnosis with AI
         </p>
     </div>
     """, unsafe_allow_html=True)
 
 def create_confidence_dashboard(confidence_value):
     """
-    Crea un dashboard de confianza más elaborado.
+    Creates a more elaborate confidence dashboard.
     
     Args:
-        confidence_value: Valor de confianza (0-1)
+        confidence_value: Confidence value (0-1)
     """
     confidence_percentage = confidence_value * 100
     
-    # Determinar nivel y color
+    # Determine level and color
     if confidence_percentage >= 85:
-        level = "Excelente"
+        level = "Excellent"
         color = "#27AE60"
         icon = "🟢"
-        description = "Diagnóstico altamente confiable"
+        description = "Highly reliable diagnosis"
     elif confidence_percentage >= 70:
-        level = "Bueno"
+        level = "Good"
         color = "#3498DB"
         icon = "🔵"
-        description = "Diagnóstico confiable"
+        description = "Reliable diagnosis"
     elif confidence_percentage >= 50:
-        level = "Moderado"
+        level = "Moderate"
         color = "#F39C12"
         icon = "🟡"
-        description = "Diagnóstico con precaución"
+        description = "Diagnosis with caution"
     else:
-        level = "Bajo"
+        level = "Low"
         color = "#E74C3C"
         icon = "🔴"
-        description = "Requiere evaluación adicional"
+        description = "Requires additional evaluation"
     
     st.markdown(f"""
     <div style="background: white; 
@@ -107,14 +107,14 @@ def create_confidence_dashboard(confidence_value):
                     border-radius: 10px; 
                     margin-top: 1rem;">
             <p style="margin: 0; color: {color}; font-weight: 600;">
-                ℹ️ Interpretación Clínica
+                ℹ️ Clinical Interpretation
             </p>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
 def create_system_metrics():
-    """Crea métricas del sistema en tiempo real."""
+    """Creates real-time system metrics."""
     import datetime
     
     metrics_col1, metrics_col2, metrics_col3 = st.columns(3)
@@ -129,7 +129,7 @@ def create_system_metrics():
                     box-shadow: 0 4px 16px rgba(39, 174, 96, 0.3);">
             <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚡</div>
             <h3 style="margin: 0; font-size: 1.8rem;">< 3s</h3>
-            <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Tiempo de Análisis</p>
+            <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Analysis Time</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -143,7 +143,7 @@ def create_system_metrics():
                     box-shadow: 0 4px 16px rgba(52, 152, 219, 0.3);">
             <div style="font-size: 2rem; margin-bottom: 0.5rem;">🧠</div>
             <h3 style="margin: 0; font-size: 1.8rem;">ResNet152</h3>
-            <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Modelo de IA</p>
+            <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">AI Model</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -157,33 +157,33 @@ def create_system_metrics():
                     box-shadow: 0 4px 16px rgba(142, 68, 173, 0.3);">
             <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
             <h3 style="margin: 0; font-size: 1.8rem;">95%</h3>
-            <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Precisión Global</p>
+            <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Overall Accuracy</p>
         </div>
         """, unsafe_allow_html=True)
 
 def create_disease_info_card(disease_name, disease_info):
     """
-    Crea una tarjeta informativa de enfermedad mejorada.
+    Create an improved disease information card.
     
     Args:
-        disease_name: Nombre de la enfermedad
-        disease_info: Información de la enfermedad
+        disease_name: Name of the disease
+        disease_info: Information about the disease
     """
-    # Determinar icon según severidad
+    # Determine icon based on severity
     severity_icons = {
-        "Benigna": "✅",
-        "Leve": "💛",
-        "Leve a Moderada": "🟡",
-        "Moderada": "🟠",
-        "Grave - Requiere atención inmediata": "🚨"
+        "Benign": "✅",
+        "Mild": "💛",
+        "Mild to Moderate": "🟡",
+        "Moderate": "🟠",
+        "Severe - Requires immediate attention": "🚨"
     }
     
     severity_colors = {
-        "Benigna": "#27AE60",
-        "Leve": "#F1C40F",
-        "Leve a Moderada": "#F39C12",
-        "Moderada": "#E67E22",
-        "Grave - Requiere atención inmediata": "#E74C3C"
+        "Benign": "#27AE60",
+        "Mild": "#F1C40F",
+        "Mild to Moderate": "#F39C12",
+        "Moderate": "#E67E22",
+        "Severe - Requires immediate attention": "#E74C3C"
     }
     
     icon = severity_icons.get(disease_info["severity"], "ℹ️")
@@ -221,7 +221,7 @@ def create_disease_info_card(disease_name, disease_info):
         </div>
         
         <div style="margin-bottom: 1rem;">
-            <h4 style="color: #34495E; margin: 0 0 0.5rem 0;">📋 Descripción</h4>
+            <h4 style="color: #34495E; margin: 0 0 0.5rem 0;">📋 Description</h4>
             <p style="color: #7F8C8D; margin: 0; line-height: 1.6;">
                 {disease_info['description']}
             </p>
@@ -231,7 +231,7 @@ def create_disease_info_card(disease_name, disease_info):
                     padding: 1rem; 
                     border-radius: 10px; 
                     border: 1px solid {disease_info['color']}30;">
-            <h4 style="color: {disease_info['color']}; margin: 0 0 0.5rem 0;">💊 Tratamiento</h4>
+            <h4 style="color: {disease_info['color']}; margin: 0 0 0.5rem 0;">💊 Treatment</h4>
             <p style="color: #34495E; margin: 0; font-weight: 500;">
                 {disease_info['treatment']}
             </p>
@@ -240,7 +240,7 @@ def create_disease_info_card(disease_name, disease_info):
     """, unsafe_allow_html=True)
 
 def create_medical_disclaimer():
-    """Crea un disclaimer médico profesional."""
+    """Create a professional medical disclaimer."""
     st.markdown("""
     <div style="background: linear-gradient(135deg, #34495E, #2C3E50); 
                 color: white; 
@@ -253,13 +253,13 @@ def create_medical_disclaimer():
         <div style="font-size: 3rem; margin-bottom: 1rem;">⚕️</div>
         
         <h3 style="margin: 0 0 1rem 0; color: white;">
-            Aviso Médico Importante
+            Important Medical Notice
         </h3>
         
         <p style="color: rgba(255,255,255,0.9); margin: 0; line-height: 1.6; font-size: 1.1rem;">
-            Este sistema es una <strong>herramienta de apoyo diagnóstico</strong> que utiliza 
-            inteligencia artificial. Los resultados deben ser siempre interpretados por un 
-            <strong>dermatólogo profesional</strong>. No reemplaza el juicio clínico médico.
+            This system is a <strong>diagnostic support tool</strong> that uses 
+            artificial intelligence. Results should always be interpreted by a 
+            <strong>professional dermatologist</strong>. It does not replace medical clinical judgment.
         </p>
         
         <div style="background: rgba(255,255,255,0.1); 
@@ -267,7 +267,7 @@ def create_medical_disclaimer():
                     border-radius: 10px; 
                     margin-top: 1.5rem;">
             <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">
-                🏥 Para consultas médicas, contacte con su centro de salud o especialista dermatológico de confianza.
+                🏥 For medical consultations, contact your trusted health center or dermatology specialist.
             </p>
         </div>
     </div>

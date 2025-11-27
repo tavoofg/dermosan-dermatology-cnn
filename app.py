@@ -1,5 +1,5 @@
 """
-Aplicación principal del sistema de diagnóstico dermatológico Dermosan
+Main application of the Dermosan dermatological diagnostic system
 """
 
 import streamlit as st
@@ -8,14 +8,15 @@ from PIL import Image
 import io
 import sys
 import os
+import traceback
 
-# Configurar logging
+# Configure logging
 logging.basicConfig(level=logging.INFO)
 
-# Agregar el directorio actual al path para imports
+# Add current directory to path for imports
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Imports de módulos locales
+# Local module imports
 from src.predictor import DermatologyPredictor, analyze_image_quality
 from src.utils import (
     set_page_config, display_header, display_sidebar_info,
@@ -28,43 +29,43 @@ from src.utils import (
 from src.config import APP_CONFIG
 
 def main():
-    """Función principal de la aplicación."""
+    """Main function of the application."""
     
-    # Configurar página
+    # Configure page
     set_page_config()
     
-    # Mostrar header
+    # Show header
     display_header()
     
-    # Mostrar información en sidebar
+    # Show sidebar information
     display_sidebar_info()
     
-    # Inicializar predictor
+    # Initialize predictor
     @st.cache_resource
     def load_predictor():
-        """Carga el predictor con cache para optimizar rendimiento."""
+        """Load the predictor with cache to optimize performance."""
         try:
-            with st.spinner("Cargando modelo de IA..."):
+            with st.spinner("Loading AI model..."):
                 predictor = DermatologyPredictor()
-                st.success("Modelo cargado exitosamente")
+                st.success("Model loaded successfully")
                 return predictor
         except FileNotFoundError as e:
-            st.error("**Error:** No se encontró el archivo del modelo")
+            st.error("**Error:** Model file not found")
             st.info("""
-            **Solución:** Asegúrese de que el archivo del modelo esté en una de estas ubicaciones:
-            - `models/best_resnet152.h5` (recomendado)
-            - `Modelo Entrenado/best_resnet152.h5` (alternativo)
+            **Solution:** Ensure the model file is located in one of these paths:
+            - `models/best_resnet152.h5` (recommended)
+            - `Trained_Model/best_resnet152.h5` (alternative)
             """)
             st.stop()
         except Exception as e:
-            st.error(f"**Error crítico al cargar el modelo:** {str(e)}")
-            with st.expander("Detalles técnicos del error"):
-                st.code(f"Tipo: {type(e).__name__}\nMensaje: {str(e)}")
+            st.error(f"**Critical error loading model:** {str(e)}")
+            with st.expander("Technical error details"):
+                st.code(f"Type: {type(e).__name__}\nMessage: {str(e)}")
             st.info("""
-            **Posibles soluciones:**
-            1. Verificar que TensorFlow esté instalado: `pip install tensorflow`
-            2. Comprobar compatibilidad del modelo
-            3. Ejecutar script de verificación: `python verificar_modelo.py`
+            **Possible solutions:**
+            1. Verify that TensorFlow is installed: `pip install tensorflow`
+            2. Check model compatibility
+            3. Run verification script: `python verify_model.py`
             """)
             return None
     
@@ -73,73 +74,73 @@ def main():
     if predictor is None:
         st.stop()
     
-    # Interfaz principal
-    st.markdown("### Subir Imagen para Diagnóstico")
+    # Main interface
+    st.markdown("### Upload Image for Diagnosis")
     
-    # Métricas rápidas en la parte superior
+    # Quick metrics at the top
     col_a, col_b, col_c, col_d = st.columns(4)
     with col_a:
-        st.metric("Precisión", "95%", "Optimizado")
+        st.metric("Accuracy", "95%", "Optimized")
     with col_b:
-        st.metric("Velocidad", "< 3s", "Rápido")
+        st.metric("Speed", "< 3s", "Fast")
     with col_c:
-        st.metric("Modelo", "ResNet152", "Cargado")
+        st.metric("Model", "ResNet152", "Loaded")
     with col_d:
-        st.metric("Estado", "Activo", "Online")
+        st.metric("Status", "Active", "Online")
     
     st.markdown("---")
     
-    # Upload de imagen
+    # Image upload
     uploaded_file = st.file_uploader(
-        "Seleccione una imagen dermatológica",
+        "Select a dermatological image",
         type=['jpg', 'jpeg', 'png'],
-        help="Formatos aceptados: JPG, JPEG, PNG"
+        help="Accepted formats: JPG, JPEG, PNG"
     )
     
     if uploaded_file is not None:
         try:
-            # Cargar imagen
+            # Load image
             image = Image.open(uploaded_file)
             
-            # Layout con columnas
+            # Layout with columns
             col1, col2 = st.columns([1, 1])
             
             with col1:
-                st.markdown("#### Imagen Cargada")
-                st.image(image, caption="Imagen para diagnóstico", width=300)
+                st.markdown("#### Uploaded Image")
+                st.image(image, caption="Image for diagnosis", width=300)
             
             with col2:
-                st.markdown("#### Análisis de Calidad")
+                st.markdown("#### Quality Analysis")
                 
-                with st.spinner("Analizando calidad de imagen..."):
+                with st.spinner("Analyzing image quality..."):
                     quality_result = analyze_image_quality(image)
                 
                 display_quality_analysis(quality_result)
             
-            # Realizar predicción
-            should_analyze = st.button("Analizar Imagen", type="primary")
+            # Perform prediction
+            should_analyze = st.button("Analyze Image", type="primary")
             
             if should_analyze:
-                with st.spinner("Analizando imagen con IA dermatológica..."):
+                with st.spinner("Analyzing image with dermatological AI..."):
                     prediction_result = predictor.predict(image)
                     recommendations = predictor.get_medical_recommendation(prediction_result)
                 
-                # Resultado principal
+                # Main result
                 predicted_disease = prediction_result['predicted_class']
                 confidence = prediction_result['confidence']
                 
-                # Dashboard de resultados
+                # Results dashboard
                 st.markdown("---")
-                st.markdown("## Dashboard de Resultados Detallados")
+                st.markdown("## Detailed Results Dashboard")
                 
-                # Dashboard principal mejorado
-                st.markdown("### Diagnóstico Principal")
+                # Enhanced main dashboard
+                st.markdown("### Main Diagnosis")
                 
-                # Layout mejorado: 3 columnas
+                # Improved layout: 3 columns
                 main_row1_col1, main_row1_col2, main_row1_col3 = st.columns([2, 1, 1.5])
                 
                 with main_row1_col1:
-                    # Información principal del diagnóstico con diseño mejorado
+                    # Main diagnosis information with enhanced design
                     st.markdown(f"""
                     <div style="background: linear-gradient(135deg, #2E5BBA, #4A90B8); 
                                 color: white; padding: 1.5rem; border-radius: 15px; 
@@ -153,12 +154,12 @@ def main():
                     </div>
                     """, unsafe_allow_html=True)
                     
-                    # Mostrar nivel de confianza con colores
+                    # Display confidence level with colors
                     display_confidence_level(confidence)
                 
                 with main_row1_col2:
-                    # Gauge de confianza compacto
-                    st.markdown("**Medidor**")
+                    # Compact confidence gauge
+                    st.markdown("**Gauge**")
                     st.plotly_chart(
                         create_confidence_gauge(confidence),
                         use_container_width=True,
@@ -166,15 +167,15 @@ def main():
                     )
                 
                 with main_row1_col3:
-                    # Distribución de probabilidades integrada - versión compacta
-                    st.markdown("**Top Probabilidades**")
+                    # Integrated probability distribution - compact version
+                    st.markdown("**Top Probabilities**")
                     st.plotly_chart(
                         create_compact_probability_chart(prediction_result['all_probabilities']),
                         use_container_width=True,
                         config={'displayModeBar': False}
                     )
                 
-                # Resumen estadístico visual
+                # Visual statistical summary
                 st.markdown("---")
                 st.markdown("""
                 <div style="background: linear-gradient(135deg, #ECF0F1, #BDC3C7); 
@@ -185,7 +186,7 @@ def main():
                 </div>
                 """, unsafe_allow_html=True)
                 
-                # Métricas clave en columnas
+                # Key metrics in columns
                 metric_col1, metric_col2, metric_col3, metric_col4 = st.columns(4)
                 
                 with metric_col1:
@@ -197,49 +198,49 @@ def main():
                     )
                 
                 with metric_col2:
-                    # Calcular número de diagnósticos considerados
+                    # Calculate number of diagnoses considered
                     num_diagnoses = len([p for p in prediction_result['all_probabilities'].values() if p > 0.05])
                     st.metric(
-                        label="Diagnósticos",
+                        label="Diagnoses",
                         value=f"{num_diagnoses}",
-                        delta="analizados"
+                        delta="analyzed"
                     )
                 
                 with metric_col3:
-                    # Determinar nivel de riesgo
-                    risk_level = "Alto" if "Melanoma" in predicted_disease or "Carcinoma" in predicted_disease else "Medio" if confidence < 0.7 else "Bajo"
+                    # Determine risk level
+                    risk_level = "High" if "Melanoma" in predicted_disease or "Carcinoma" in predicted_disease else "Medium" if confidence < 0.7 else "Low"
                     st.metric(
-                        label="Nivel Riesgo",
+                        label="Risk Level",
                         value=risk_level,
-                        delta="evaluado"
+                        delta="evaluated"
                     )
                 
                 with metric_col4:
                     st.metric(
-                        label="Tiempo Análisis",
+                        label="Analysis Time",
                         value="< 5s",
-                        delta="Rápido"
+                        delta="Fast"
                     )
                 
-                # Sección de análisis avanzado
+                # Advanced analysis section
                 st.markdown("---")
                 st.markdown("""
                 <div style="text-align: center; margin: 2rem 0 1rem 0;">
-                    <h3 style="color: #2E5BBA; margin: 0;">Análisis Clínico Avanzado</h3>
+                    <h3 style="color: #2E5BBA; margin: 0;">Advanced Clinical Analysis</h3>
                     <p style="color: #34495E; margin: 0.5rem 0 0 0; font-style: italic;">
-                        Evaluación integral de riesgo y comparaciones diagnósticas
+                        Comprehensive risk assessment and diagnostic comparisons
                     </p>
                 </div>
                 """, unsafe_allow_html=True)
                 
-                # Primera fila de gráficos importantes
+                # First row of important charts
                 analysis_col1, analysis_col2 = st.columns(2)
                 
                 with analysis_col1:
                     st.markdown("""
                     <div style="text-align: center; margin-bottom: 1rem;">
-                        <h4 style="color: #E74C3C; margin: 0;">Evaluación de Riesgo</h4>
-                        <p style="color: #7F8C8D; font-size: 0.9rem; margin: 0.3rem 0;">Nivel de urgencia médica</p>
+                        <h4 style="color: #E74C3C; margin: 0;">Risk Assessment</h4>
+                        <p style="color: #7F8C8D; font-size: 0.9rem; margin: 0.3rem 0;">Level of medical urgency</p>
                     </div>
                     """, unsafe_allow_html=True)
                     st.plotly_chart(
@@ -251,8 +252,8 @@ def main():
                 with analysis_col2:
                     st.markdown("""
                     <div style="text-align: center; margin-bottom: 1rem;">
-                        <h4 style="color: #27AE60; margin: 0;">Comparación Diagnóstica</h4>
-                        <p style="color: #7F8C8D; font-size: 0.9rem; margin: 0.3rem 0;">Top 3 diagnósticos más probables</p>
+                        <h4 style="color: #27AE60; margin: 0;">Diagnostic Comparison</h4>
+                        <p style="color: #7F8C8D; font-size: 0.9rem; margin: 0.3rem 0;">Top 3 most probable diagnoses</p>
                     </div>
                     """, unsafe_allow_html=True)
                     st.plotly_chart(
@@ -261,13 +262,13 @@ def main():
                         config={'displayModeBar': False}
                     )
                 
-                # Evolución temporal
+                # Temporal evolution
                 st.markdown("---")
                 st.markdown("""
                 <div style="text-align: center; margin: 2rem 0 1rem 0;">
-                    <h4 style="color: #F39C12; margin: 0;">Proyección de Evolución Temporal</h4>
+                    <h4 style="color: #F39C12; margin: 0;">Temporal Evolution Projection</h4>
                     <p style="color: #7F8C8D; font-size: 0.9rem; margin: 0.3rem 0;">
-                        Simulación de progresión con diferentes escenarios de tratamiento
+                        Progression simulation with different treatment scenarios
                     </p>
                 </div>
                 """, unsafe_allow_html=True)
@@ -277,9 +278,9 @@ def main():
                     config={'displayModeBar': False}
                 )
                 
-                # Información detallada
+                # Detailed information
                 st.markdown("---")
-                st.markdown("### Información Clínica Detallada")
+                st.markdown("### Detailed Clinical Information")
                 
                 info_col1, info_col2 = st.columns(2)
                 
@@ -287,29 +288,30 @@ def main():
                     display_disease_info(predicted_disease)
                 
                 with info_col2:
-                    st.markdown("#### Recomendaciones Médicas")
+                    st.markdown("#### Medical Recommendations")
                     display_medical_recommendations(recommendations)
                 
-                # Disclaimer médico
+                # Medical disclaimer
                 st.markdown("""
                 <div style="background: linear-gradient(135deg, #34495E, #2C3E50); 
                             color: white; padding: 2rem; border-radius: 15px; 
                             text-align: center; margin: 2rem 0;">
-                    <h3 style="margin: 0 0 1rem 0; color: white;">Aviso Médico Importante</h3>
+                    <h3 style="margin: 0 0 1rem 0; color: white;">Important Medical Disclaimer</h3>
                     <p style="margin: 0; color: rgba(255,255,255,0.9);">
-                        Este sistema es una herramienta de apoyo diagnóstico que utiliza 
-                        inteligencia artificial. Los resultados deben ser siempre interpretados por un 
-                        dermatólogo profesional. No reemplaza el juicio clínico médico.
+                        This system is a diagnostic support tool that uses 
+                        artificial intelligence. Results should always be interpreted by a 
+                        professional dermatologist. It does not replace medical clinical judgment.
                     </p>
                 </div>
                 """, unsafe_allow_html=True)
         
         except Exception as e:
-            st.error(f"**Error al procesar la imagen:** {str(e)}")
-            logging.error(f"Error en procesamiento: {str(e)}")
+            st.error(f"**Error processing the image:** {str(e)}")
+            logging.error(f"Processing error: {str(e)}")
+            traceback.print_exc()
     
     else:
-        st.info("Suba una imagen dermatológica para comenzar el análisis")
+        st.info("Upload a dermatological image to start the analysis")
     
     # Footer
     display_medical_footer()

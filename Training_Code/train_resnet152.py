@@ -5,16 +5,16 @@ import tensorflow as tf
 from sklearn.utils import class_weight
 import matplotlib.pyplot as plt
 
-# ── 1) Directorio de checkpoints ───────────────────────────────────────────
+# ── 1) Checkpoints directory ───────────────────────────────────────────
 os.makedirs("checkpoints", exist_ok=True)
 
-# ── 2) Semilla para reproducibilidad ────────────────────────────────────────
+# ── 2) Seed for reproducibility ────────────────────────────────────────
 SEED = 42
 random.seed(SEED)
 np.random.seed(SEED)
 tf.random.set_seed(SEED)
 
-# ── 3) Paths y parámetros ───────────────────────────────────────────────────
+# ── 3) Paths and parameters ───────────────────────────────────────────────────
 DATA_DIR   = "IMG_CLASSES"
 BATCH_SIZE = 32
 IMG_SIZE   = (224, 224)
@@ -23,9 +23,9 @@ AUTOTUNE   = tf.data.AUTOTUNE
 # ── 4) Clases ───────────────────────────────────────────────────────────────
 classes     = sorted(os.listdir(DATA_DIR))
 class_index = {name: i for i, name in enumerate(classes)}
-print("Clases encontradas:", class_index)
+print("Classes found:", class_index)
 
-# ── 5) Preprocesado ─────────────────────────────────────────────────────────
+# ── 5) Preprocessing ─────────────────────────────────────────────────────────
 from tensorflow.keras.applications.resnet import preprocess_input
 
 def process_image(path, label):
@@ -64,7 +64,7 @@ train_ds = make_dataset(train_pairs)
 val_ds   = make_dataset(val_pairs)
 test_ds  = make_dataset(test_pairs)
 
-# ── 7) Pesos de clase ───────────────────────────────────────────────────────
+# ── 7) Class weights ───────────────────────────────────────────────────────
 train_labels = np.concatenate([y for _, y in train_ds], axis=0)
 weights      = class_weight.compute_class_weight(
     class_weight='balanced',
@@ -72,9 +72,9 @@ weights      = class_weight.compute_class_weight(
     y=train_labels
 )
 class_weights = dict(enumerate(weights))
-print("Pesos de clase:", class_weights)
+print("Class weights:", class_weights)
 
-# ── 8) Modelo ───────────────────────────────────────────────────────────────
+# ── 8) Model ───────────────────────────────────────────────────────────────
 from tensorflow.keras.applications import ResNet152
 from tensorflow.keras.layers import GlobalAveragePooling2D, Dense, Dropout
 from tensorflow.keras.models import Model
@@ -119,34 +119,33 @@ checkpoint_cb = ModelCheckpoint(
     verbose=1
 )
 
-# ── 10) (Opcional) Retomar desde un checkpoint ───────────────────────────────
-# 🔹 Si es la primera vez que entrenas, DEJA COMENTADAS las siguientes líneas.
-# 🔹 Si ya tienes un checkpoint (.h5) y deseas continuar el entrenamiento,
-#    descomenta y ajusta la ruta + número de época según corresponda.
+# ── 10) (Optional) Resume from a checkpoint ───────────────────────────────
+# 🔹 If this is your first time training, KEEP the following lines COMMENTED.
+# 🔹 If you already have a checkpoint (.h5) and want to continue training,
+#    uncomment and adjust the path + epoch number as needed.
 
 # last_ckpt = "checkpoints/resnet152-epoch03-val0.69.weights.h5"
 # model.load_weights(last_ckpt)
-# initial_epoch = 3     # Número de época donde se detuvo el entrenamiento
-initial_epoch = 0        # 0 si comienzas desde cero
-total_epochs  = 9        # Total de épocas a entrenar
+# initial_epoch = 3     # Epoch number where training was stopped
+initial_epoch = 0        # 0 if starting from scratch
+total_epochs  = 9        # Total epochs to train
 
 
-# ── 11) Entrenamiento ───────────────────────────────────────────────────────
+# ── 11) Training ───────────────────────────────────────────────────────
 history = model.fit(
     train_ds,
     validation_data=val_ds,
-    epochs=total_epochs,          # Total deseado de épocas (p. ej. 9)
-    initial_epoch=initial_epoch,  # Si retomas, ajusta este valor
+    epochs=total_epochs,          # Total desired epochs (e.g., 9)
+    initial_epoch=initial_epoch,  # If resuming, adjust this value
     class_weight=class_weights,
     callbacks=[lr_cb, checkpoint_cb]
 )
 
 
-
-# ── 12) Guardar modelo final ────────────────────────────────────────────────
+# ── 12) Save final model ────────────────────────────────────────────────
 model.save("best_resnet152.h5")
 
-# ── 13) Evaluar en test set ─────────────────────────────────────────────────
+# ── 13) Evaluate on test set ─────────────────────────────────────────────────
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 y_true, y_pred = [], []
 for imgs, labs in test_ds:

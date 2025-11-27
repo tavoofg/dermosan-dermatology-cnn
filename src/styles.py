@@ -1,12 +1,12 @@
 """
-Estilos CSS personalizados para Dermosan
+Custom CSS styles for Dermosan
 """
 
 def get_custom_css():
-    """Retorna CSS personalizado para la aplicación."""
+    """Returns custom CSS for the application."""
     return """
     <style>
-    /* Variables CSS para colores médicos */
+    /* CSS variables for medical colors */
     :root {
         --primary-blue: #2E5BBA;
         --secondary-blue: #4A90B8;
@@ -20,18 +20,18 @@ def get_custom_css():
         --shadow-color: rgba(46, 91, 186, 0.1);
     }
 
-    /* Estilos generales */
+    /* General styles */
     .stApp {
         background-color: var(--light-gray);
     }
 
-    /* Personalización del sidebar */
+    /* Sidebar customization */
     .css-1d391kg {
         background: linear-gradient(180deg, var(--white) 0%, #F8F9FA 100%);
         border-right: 2px solid var(--primary-blue);
     }
 
-    /* Botones personalizados */
+    /* Custom buttons */
     .stButton > button {
         background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
         color: white;
@@ -48,7 +48,7 @@ def get_custom_css():
         box-shadow: 0 6px 16px var(--shadow-color);
     }
 
-    /* Métricas personalizadas */
+    /* Custom metrics */
     .metric-card {
         background: white;
         padding: 1.5rem;
@@ -58,20 +58,20 @@ def get_custom_css():
         margin: 1rem 0;
     }
 
-    /* File uploader personalizado */
+    /* Custom file uploader */
     .css-1cpxqw2 {
         border: 2px dashed var(--primary-blue);
         border-radius: 10px;
         background-color: rgba(46, 91, 186, 0.05);
     }
 
-    /* Alertas personalizadas */
+    /* Custom alerts */
     .stAlert {
         border-radius: 10px;
         border-left: 4px solid var(--medical-green);
     }
 
-    /* Contenedores de resultados */
+    /* Result containers */
     .result-container {
         background: white;
         border-radius: 15px;
@@ -81,7 +81,7 @@ def get_custom_css():
         border: 1px solid rgba(46, 91, 186, 0.1);
     }
 
-    /* Texto de confianza */
+    /* Confidence text */
     .confidence-high {
         color: var(--medical-green);
         font-weight: 600;
@@ -97,14 +97,14 @@ def get_custom_css():
         font-weight: 600;
     }
 
-    /* Tablas personalizadas */
+    /* Custom tables */
     .stDataFrame {
         border-radius: 10px;
         overflow: hidden;
         box-shadow: 0 2px 8px var(--shadow-color);
     }
 
-    /* Sidebar personalizado */
+    /* Custom sidebar */
     .sidebar-content {
         background: white;
         border-radius: 10px;
@@ -113,7 +113,7 @@ def get_custom_css():
         box-shadow: 0 2px 8px var(--shadow-color);
     }
 
-    /* Indicadores de estado */
+    /* Status indicators */
     .status-indicator {
         display: inline-block;
         width: 10px;
@@ -135,7 +135,7 @@ def get_custom_css():
         background-color: var(--medical-red);
     }
 
-    /* Animación de pulso */
+    /* Pulse animation */
     @keyframes pulse {
         0% {
             box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7);
@@ -148,14 +148,14 @@ def get_custom_css():
         }
     }
 
-    /* Gráficos personalizados */
+    /* Custom plots */
     .plotly-graph-div {
         border-radius: 10px;
         overflow: hidden;
         box-shadow: 0 2px 12px var(--shadow-color);
     }
 
-    /* Footer personalizado */
+    /* Custom footer */
     .footer {
         background: linear-gradient(135deg, var(--medical-gray), var(--primary-blue));
         color: white;
@@ -165,7 +165,7 @@ def get_custom_css():
         margin-top: 2rem;
     }
 
-    /* Scrollbar personalizado */
+    /* Custom scrollbar */
     ::-webkit-scrollbar {
         width: 8px;
     }
@@ -199,19 +199,19 @@ def get_custom_css():
     """
 
 def apply_custom_styling():
-    """Aplica los estilos personalizados a la aplicación."""
+    """Applies custom styles to the application."""
     import streamlit as st
     st.markdown(get_custom_css(), unsafe_allow_html=True)
 
 def create_metric_card(title: str, value: str, description: str = "", color: str = "primary"):
     """
-    Crea una tarjeta de métrica personalizada.
+    Creates a custom metric card.
     
     Args:
-        title: Título de la métrica
-        value: Valor principal
-        description: Descripción adicional
-        color: Color del tema (primary, success, warning, danger)
+        title: Metric title
+        value: Main value
+        description: Additional description
+        color: Theme color (primary, success, warning, danger)
     """
     color_map = {
         "primary": "#2E5BBA",
@@ -232,11 +232,11 @@ def create_metric_card(title: str, value: str, description: str = "", color: str
 
 def create_status_indicator(status: str, text: str):
     """
-    Crea un indicador de estado con animación.
+    Creates a status indicator with animation.
     
     Args:
-        status: Tipo de estado (active, warning, error)
-        text: Texto a mostrar
+        status: Status type (active, warning, error)
+        text: Text to display
     """
     return f"""
     <div style="display: flex; align-items: center; margin: 0.5rem 0;">

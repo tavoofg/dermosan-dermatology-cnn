@@ -1,59 +1,61 @@
-# Dermosan - Sistema de Diagnóstico Dermatológico
+# Dermosan - Dermatological Diagnostic System
 
-Herramienta Interactiva con Streamlit para el Diagnóstico Dermatológico Asistido mediante Redes Neuronales Convolucionales (CNNs)
+DERMOSAN: Development of an interactive software tool in Streamlit for dermatological diagnosis assisted by convolutional neural networks (CNNs)
 
-## 🧠 Descripción del Proyecto
+## 🧠 Project Description
 
-Repositorio oficial del proyecto DERMOSAN, una herramienta de diagnóstico dermatológico asistido por inteligencia artificial. Integra un modelo ResNet152 entrenado sobre 27 153 imágenes dermatológicas y una interfaz Streamlit para la carga, análisis y visualización de resultados en tiempo real. 
+Official repository of the DERMOSAN project, a dermatological diagnostic tool powered by artificial intelligence. It integrates a ResNet152 model trained on 27,153 dermatological images and a Streamlit interface for real-time image upload, analysis, and results visualization.
 
-### 🩹 Enfermedades Diagnosticadas
+### 🩹 Diagnosed Diseases
 
-1. **Eczema** *(1,677 imágenes)*
-2. **Melanoma** *(3,140 imágenes)*
-3. **Atopic Dermatitis** *(1,257 imágenes)*
-4. **Basal Cell Carcinoma (BCC)** *(3,323 imágenes)*
-5. **Melanocytic Nevi (NV)** *(7,970 imágenes)*
-6. **Benign Keratosis-like Lesions (BKL)** *(2,624 imágenes)*
-7. **Psoriasis / Lichen Planus & related diseases** *(2,055 imágenes)*
-8. **Seborrheic Keratoses & other benign tumors** *(1,847 imágenes)*
-9. **Tinea / Candidiasis & other fungal infections** *(1,702 imágenes)*
-10. **Warts / Molluscum & other viral infections** *(2,103 imágenes)*
+1. **Eczema** *(1,677 images)*
+2. **Melanoma** *(3,140 images)*
+3. **Atopic Dermatitis** *(1,257 images)*
+4. **Basal Cell Carcinoma (BCC)** *(3,323 images)*
+5. **Melanocytic Nevi (NV)** *(7,970 images)*
+6. **Benign Keratosis-like Lesions (BKL)** *(2,624 images)*
+7. **Psoriasis / Lichen Planus & related diseases** *(2,055 images)*
+8. **Seborrheic Keratoses & other benign tumors** *(1,847 images)*
+9. **Tinea / Candidiasis & other fungal infections** *(1,702 images)*
+10. **Warts / Molluscum & other viral infections** *(2,103 images)*
 
-**Total general:** *27,153 imágenes*
-
-
-## 🚀 Características Principales
-
-- **Modelo de Deep Learning**: ResNet152 con transfer learning
-- **Interfaz intuitiva**: Desarrollada con Streamlit
-- **Análisis de calidad de imagen**: Evaluación automática de idoneidad
-- **Diagnóstico diferencial**: Top 3 predicciones con probabilidades
-- **Recomendaciones clínicas**: Sugerencias médicas basadas en confianza
-- **Reportes exportables**: Generación de informes completos
-- **Validación médica**: Recordatorios de validación profesional
-
-## 📋 Requisitos del Sistema
-
-### 🧩 Dependencias principales
-
-- **Python 3.10+**
-- **TensorFlow 2.15.0** y **Keras 3.0**
-- **Streamlit 1.32.0**
-- **NumPy**, **Pandas**, **Plotly**
-- **OpenCV**, **Pillow**
-- **Scikit-learn**
-- **Matplotlib** y **Seaborn**
+**Overall total:** *27,153 images*
 
 
-##  Instalación
+## 🚀 Main Features
 
-1. **Clonar el repositorio:**
+* **Deep Learning Model**: ResNet152 with transfer learning
+* **Intuitive Interface**: Developed with Streamlit
+* **Image Quality Analysis**: Automatic suitability evaluation
+* **Differential Diagnosis**: Top 3 predictions with probabilities
+* **Clinical Recommendations**: Medical suggestions based on confidence
+* **Exportable Reports**: Generation of complete diagnostic reports
+* **Medical Validation**: Professional validation reminders
+
+## 📋 System Requirements
+
+### 🧩 Main Dependencies
+
+* **Python 3.10+**
+* **TensorFlow 2.15.0** and **Keras 3.0**
+* **Streamlit 1.32.0**
+* **NumPy**, **Pandas**, **Plotly**
+* **OpenCV**, **Pillow**
+* **Scikit-learn**
+* **Matplotlib** and **Seaborn**
+
+
+## Installation
+
+1. **Clone the repository:**
+
 ```bash
 git clone https://github.com/tavoofg/dermosan.git
 cd dermosan
 ```
 
-2. **Crear entorno virtual:**
+2. **Create a virtual environment:**
+
 ```bash
 python -m venv dermosan_env
 # Windows
@@ -62,151 +64,167 @@ dermosan_env\Scripts\activate
 source dermosan_env/bin/activate
 ```
 
-3. **Instalar dependencias:**
+3. **Install dependencies:**
+
 ```bash
 pip install -r requirements.txt
 ```
 
-4. **Verificar estructura de archivos:**
+4. **Verify file structure:**
+
 ```
 dermosan/
-├── app.py                   # Aplicación principal (interfaz Streamlit)
-├── requirements.txt         # Dependencias del entorno
-├── src/                     # Módulos del sistema
-│   ├── config.py            # Configuración general del sistema
-│   ├── predictor.py         # Módulo de predicción
-│   └── utils.py             # Utilidades de interfaz
-├── Modelo_Entrenado/        # 📁 Aquí irá el modelo entrenado (.h5) tras el entrenamiento (Crear carpeta)
-│   └── best_resnet152.h5    # Modelo final ResNet152
-├── Codigo_Entrenamiento/    # Scripts y datos para entrenamiento
-│   ├── train_resnet152.py   # Entrenamiento del modelo
-│   └── IMG_CLASSES/         # 📁 Aquí irá el dataset de Kaggle:
+├── app.py                   # Main application (Streamlit interface)
+├── requirements.txt         # Environment dependencies
+├── src/                     # System modules
+│   ├── config.py            # General system configuration
+│   ├── predictor.py         # Prediction module
+│   └── utils.py             # Interface utilities
+├── Trained_Model/           # 📁 The trained model (.h5) will be placed here after training
+│   └── best_resnet152.h5    # Final ResNet152 model
+├── Training_Code/           # Scripts and data for model training
+│   ├── train_resnet152.py   # Model training script
+│   └── IMG_CLASSES/         # 📁 Dataset from Kaggle goes here:
 │                            # https://www.kaggle.com/datasets/ismailpromus/skin-diseases-image-dataset
-└── verificar_modelo.py      # Validación del modelo
+└── verify_model.py          # Model validation script
 
 ```
 
-##  Uso del Sistema
+## System Usage
 
-### Ejecutar la aplicación:
+### Run the application:
+
 ```bash
 streamlit run app.py
 ```
 
-### Acceder a la interfaz:
-- Abrir navegador en: `http://localhost:8501`
-- Subir imagen dermatológica (JPG, PNG)
-- Revisar análisis de calidad
-- Obtener diagnóstico y recomendaciones
-- Generar reporte médico
+### Access the interface:
 
-##  Rendimiento del Modelo
+* Open your browser at: `http://localhost:8501`
+* Upload a dermatological image (JPG, PNG)
+* Review the image quality analysis
+* Obtain diagnosis and recommendations
+* Generate a medical report
 
-- **Arquitectura**: ResNet152 con *transfer learning*  
-- **Precisión estimada**: ~95%  
-- **Dataset**: 27,000+ imágenes dermatológicas  
-- **Validación**: División 80/10/10 (train/val/test)  
-- **Optimizaciones**: *Data augmentation*, *class balancing*  
+## Model Performance
 
-##  Estructura del Código
+* **Architecture**: ResNet152 with *transfer learning*
+* **Estimated accuracy**: ~95%
+* **Dataset**: 27,000+ dermatological images
+* **Validation**: 80/10/10 split (train/val/test)
+* **Optimizations**: *Data augmentation*, *class balancing*
+
+
+## Code Structure
 
 ### `app.py`
-Aplicación principal de **Streamlit** con:
-- Interfaz de usuario completa  
-- Gestión de carga de imágenes  
-- Visualización de resultados  
-- Generación de reportes exportables  
+
+Main **Streamlit** application with:
+
+* Full user interface
+* Image upload handling
+* Results visualization
+* Exportable report generation
 
 ### `src/predictor.py`
-Módulo de predicción que incluye:
-- Carga y gestión del modelo entrenado  
-- Preprocesamiento de imágenes dermatológicas  
-- Generación de predicciones  
-- Análisis automático de calidad de imagen  
+
+Prediction module that includes:
+
+* Loading and management of the trained model
+* Preprocessing of dermatological images
+* Prediction generation
+* Automatic image quality analysis
 
 ### `src/config.py`
-Configuración centralizada:
-- Parámetros del modelo  
-- Información médica de las enfermedades  
-- Umbrales de confianza  
-- Configuración general de la aplicación  
+
+Centralized configuration:
+
+* Model parameters
+* Medical information for each disease
+* Confidence thresholds
+* General application settings
 
 ### `src/utils.py`
-Utilidades de interfaz:
-- Componentes visuales de **Streamlit**  
-- Gráficos interactivos y visualizaciones  
-- Formateo de resultados clínicos  
-- Exportación de reportes médicos  
 
-##  Uso Clínico
+Interface utilities:
 
-### Recomendaciones:
-1. **Uso como herramienta de apoyo** – No reemplaza el criterio médico profesional.  
-2. **Validación profesional** – Confirmar siempre con un dermatólogo certificado.  
-3. **Calidad de imagen** – Utilizar fotografías nítidas y bien iluminadas.  
-4. **Casos urgentes** – Atención inmediata para melanomas o lesiones sospechosas.  
+* **Streamlit** visual components
+* Interactive charts and visualizations
+* Clinical result formatting
+* Medical report export
 
-### Limitaciones:
-- No diagnostica todas las condiciones dermatológicas.  
-- Requiere validación por un profesional médico.  
-- Su rendimiento depende de la calidad de la imagen.  
-- No reemplaza la biopsia ni otros estudios confirmatorios.  
+## Clinical Use
 
-##  Entrenamiento del Modelo
+### Recommendations:
 
-El modelo fue entrenado usando:
-- **Base**: ResNet152 preentrenado en *ImageNet*  
-- **Fine-tuning**: Últimas 50 capas entrenables  
-- **Optimizador**: Adam con *learning rate* adaptativo  
-- **Augmentación**: Rotación, zoom, volteo horizontal  
-- **Balanceamiento**: Pesos de clase automáticos para dataset desbalanceado  
+1. **Use as a support tool** – It does not replace professional medical judgment.
+2. **Professional validation** – Always confirm with a certified dermatologist.
+3. **Image quality** – Use clear, well-lit photographs.
+4. **Urgent cases** – Immediate attention for melanomas or suspicious lesions.
 
-##  Mejoras Futuras
+### Limitations:
 
-- [ ] Versión móvil para dispositivos médicos  
-- [ ] Inclusión de más clases dermatológicas  
-- [ ] Análisis simultáneo de múltiples lesiones  
-- [ ] Seguimiento temporal de casos clínicos  
-- [ ] API REST para integración con otros sistemas
+* Does not diagnose all dermatological conditions.
+* Requires validation by a medical professional.
+* Performance depends on image quality.
+* Does not replace biopsy or other confirmatory studies.
 
+## Model Training
 
-##  Equipo de Desarrollo
+The model was trained using:
 
-Desarrollado en el marco del proyecto de investigación **“DERMOSAN – Sistema de Diagnóstico Dermatológico Asistido por Inteligencia Artificial”**, como parte de las iniciativas de innovación promovidas por la **Universidad Nacional de Cañete (UNDC)**.
+* **Base**: ResNet152 pretrained on *ImageNet*
+* **Fine-tuning**: Last 50 trainable layers
+* **Optimizer**: Adam with adaptive *learning rate*
+* **Augmentation**: Rotation, zoom, horizontal flip
+* **Balancing**: Automatic class weights for imbalanced dataset
 
-**Integrantes del equipo:**
-- **Gustavo Fernández-Gutiérrez** – Desarrollador principal e investigador responsable  
-- **Andry Diego-Calagua** – Desarrollador e investigador asociado  
-- **Alex Pacheco-Pumaleque** – Asesor académico  
+## Future Improvements
 
-**Entidad financiadora:** Dirección de Innovación y Transferencia Tecnológica (DITT) – UNDC
+* [ ] Mobile version for medical devices
+* [ ] Inclusion of more dermatological classes
+* [ ] Simultaneous analysis of multiple lesions
+* [ ] Temporal tracking of clinical cases
+* [ ] REST API for integration with other systems
 
 
+## Development Team
 
-##  Licencia
+Developed within the framework of the research project **“DERMOSAN – Artificial Intelligence-Assisted Dermatological Diagnostic System”**, as part of the innovation initiatives promoted by the **Universidad Nacional de Cañete (UNDC)**.
 
-Este proyecto se distribuye bajo la licencia [MIT](https://opensource.org/licenses/MIT).  
-**DERMOSAN – UNDC 2025** fue desarrollado con fines de investigación y aplicación médica, orientado al apoyo diagnóstico dermatológico mediante inteligencia artificial.
+**Team members:**
+
+* **Gustavo Fernández-Gutiérrez** – Lead developer and principal researcher
+* **Andry Diego-Calagua** – Developer and associate researcher
+* **Alex Pacheco-Pumaleque** – Academic advisor
+
+**Funding entity:** Directorate of Innovation and Technology Transfer (DITT) – Universidad Nacional de Cañete (UNDC)
 
 
+## License
 
-## 💰 Información sobre Subvención
+This project is distributed under the **Attribution 4.0 International (CC BY 4.0)** license.
+[https://creativecommons.org/licenses/by/4.0/](https://creativecommons.org/licenses/by/4.0/)
 
-Este trabajo fue financiado por la **Dirección de Innovación y Transferencia Tecnológica (DITT)** de la **Vicepresidencia de Investigación** de la **Universidad Nacional de Cañete (UNDC)**, en el marco del **“Concurso de Investigación para el Desarrollo de Innovaciones y Propiedad Intelectual”**, bajo el **número de contrato 017-2024**.
+**DERMOSAN – UNDC 2025** was developed for research and medical application purposes, aimed at supporting dermatological diagnosis through artificial intelligence.
 
 
-##  Disclaimer Médico
+## 💰 Grant Information
 
-Este sistema es una **herramienta de apoyo al diagnóstico** y **no reemplaza**:
+This work was funded by the **Directorate of Innovation and Technology Transfer (DITT)** of the **Vice Presidency for Research** at the **Universidad Nacional de Cañete (UNDC)**, within the framework of the **“Research Competition for the Development of Innovations and Intellectual Property”**, under **contract number 017-2024**.
 
-- El criterio clínico profesional  
-- La evaluación médica presencial  
-- Los estudios complementarios necesarios  
-- La biopsia cuando esté indicada  
+## Medical Disclaimer
 
-Siempre consulte con un **dermatólogo certificado** para la confirmación diagnóstica y el tratamiento adecuado.
+This system is a **diagnostic support tool** and **does not replace**:
+
+* Professional clinical judgment
+* In-person medical evaluation
+* Necessary complementary studies
+* Biopsy when indicated
+
+Always consult a **certified dermatologist** for diagnostic confirmation and appropriate treatment.
 
 ---
 
-**Dermosan v1.0.0** – Sistema de Diagnóstico Dermatológico Automatizado  
+**Dermosan v1.0.0** – Automated Dermatological Diagnostic System
 *DERMOSAN – UNDC 2025*
