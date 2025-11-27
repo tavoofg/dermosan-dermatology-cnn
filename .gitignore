@@ -19,9 +19,9 @@ wheels/
 share/python-wheels/
 *.egg-info/
 
-# Dermosan específico
+# Dermosan Specific
 dermosan_venv/
-Archivos_de_Entrenamiento/
+Training_Files/
 *.h5
 *.hdf5
 models/
@@ -30,19 +30,19 @@ uploads/
 logs/
 *.log
 
-# Archivos temporales
+# Temporary Files
 *_backup.*
 *.tmp
 *.temp
 
-# Archivos de configuración local
+# Local Configuration Files
 .env.local
 config.local.py
 .installed.cfg
 *.egg
 MANIFEST
 
-# Virtual environments
+# Virtual Environments
 dermosan_venv/
 venv/
 env/
@@ -64,7 +64,7 @@ Thumbs.db
 *.log
 logs/
 
-# Temporary files
+# Temporary Files
 *.tmp
 *.temp
 
@@ -78,9 +78,8 @@ logs/
 .cache/
 *.cache
 
-
-# Datasets de imágenes médicas (muy pesados)
-Datos de prueba/
+# Medical Image Datasets (Very large files)
+Test_Files/
 data/
 dataset/
 images/
@@ -91,18 +90,17 @@ images/
 *.tiff
 *.dcm
 
-# Reportes generados
-reportes/
+# Generated Reports
 reports/
 *.pdf
 *.txt
 
-# Archivos de configuración sensibles
+# Sensitive Configuration Files
 config.json
 secrets.json
 .env
 
-# Archivos temporales de Streamlit
+# Streamlit Temporary Files
 .streamlit/secrets.toml
 
 # Backups
@@ -110,7 +108,7 @@ backup/
 *.backup
 *.bak
 
-# Modelos alternativos o checkpoints
+# Alternative Models or Checkpoints
 checkpoints/
 saved_models/
 models/
@@ -118,26 +116,25 @@ models/
 *.joblib
 *.model
 
-# Archivos de métricas grandes
+# Large Metrics Files
 metrics/
 evaluation/
 *.xlsx
 
-# Videos o archivos multimedia pesados
+# Videos or Large Multimedia Files
 *.mp4
 *.avi
 *.mov
 
-# Archivos comprimidos
+# Compressed Files
 *.zip
 *.tar.gz
 *.rar
 *.7z
 
-# Archivos de datos médicos sensibles
+# Sensitive Medical Data Files
 patient_data/
 clinical_data/
 *.dicom
 
-
-/Script_Entrenamiento
+/Training_Script
