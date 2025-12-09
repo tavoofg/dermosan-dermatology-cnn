@@ -204,7 +204,7 @@ Developed within the framework of the research project **“DERMOSAN – Artific
 ## License
 
 This project is distributed under the **Attribution 4.0 International (CC BY 4.0)** license.
-[https://creativecommons.org/licenses/by/4.0/](https://creativecommons.org/licenses/by/4.0/)
+[https://opensource.org/license/MIT](https://opensource.org/license/MIT)
 
 **DERMOSAN – UNDC 2025** was developed for research and medical application purposes, aimed at supporting dermatological diagnosis through artificial intelligence.
 
